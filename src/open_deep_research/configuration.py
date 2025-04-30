@@ -33,6 +33,7 @@ class ResearchMode(Enum):
     LINEAR = "linear"
     GRAPH = "graph"
     MULTI_AGENT = "multi_agent"
+    ENHANCED = "enhanced"  # Added enhanced mode
 
 @dataclass(kw_only=True)
 class Configuration:
@@ -58,6 +59,13 @@ class Configuration:
     # Multi-agent specific configuration
     supervisor_model: str = "openai:gpt-4.1" # Model for supervisor agent in multi-agent setup
     researcher_model: str = "openai:gpt-4.1" # Model for research agents in multi-agent setup 
+
+    # Enhanced graph-specific configuration
+    reference_tracking_enabled: bool = True  # Enable reference tracking for enhanced mode
+    conversation_enabled: bool = True  # Enable conversation capabilities for enhanced mode
+    enhanced_visualization_path: str = "enhanced_research_graph.html"  # Path for enhanced visualization
+    parallel_search_enabled: bool = True  # Enable parallel search execution
+    max_parallel_searches: int = 5  # Maximum number of parallel searches
 
     @classmethod
     def from_runnable_config(
