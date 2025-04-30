@@ -1,10 +1,14 @@
 # Open Deep Research
 
-Open Deep Research is an experimental, fully open-source research assistant that automates deep research and produces comprehensive reports on any topic. It features two implementations - a [workflow](https://langchain-ai.github.io/langgraph/tutorials/workflows/) and a multi-agent architecture - each with distinct advantages. You can customize the entire research and writing process with specific models, prompts, report structure, and search tools.
+Open Deep Research is an experimental, fully open-source research assistant that automates deep research and produces comprehensive reports on any topic. It features three implementations - a [workflow](https://langchain-ai.github.io/langgraph/tutorials/workflows/), a graph-based approach, and a multi-agent architecture - each with distinct advantages. You can customize the entire research and writing process with specific models, prompts, report structure, and search tools.
 
-#### Workflow
+#### Linear Workflow
 
 ![open-deep-research-overview](https://github.com/user-attachments/assets/a171660d-b735-4587-ab2f-cd771f773756)
+
+#### Graph-based Research
+
+![graph-based-research](https://github.com/user-attachments/assets/a171660d-b735-4587-ab2f-cd771f773756)
 
 ####  Multi-agent
 
@@ -53,6 +57,16 @@ Use this to open the Studio UI:
 - 📚 API Docs: http://127.0.0.1:2024/docs
 ```
 
+#### Graph-based Research Example
+
+You can run the graph-based research example directly:
+
+```bash
+python examples/graph_research_example.py
+```
+
+This will generate a research report using the graph-based approach and save a visualization of the research graph to an HTML file.
+
 #### Multi-agent
 
 (1) Chat with the agent about your topic of interest, and it will initiate report generation:
@@ -61,7 +75,7 @@ Use this to open the Studio UI:
 
 (2) The report is produced as markdown.
 
-#### Workflow
+#### Linear Workflow
 
 (1) Provide a `Topic`:
 
@@ -113,11 +127,11 @@ See [src/open_deep_research/graph.ipynb](src/open_deep_research/graph.ipynb) and
 
 ## Open Deep Research Implementations
 
-Open Deep Research features two distinct implementation approaches, each with its own strengths:
+Open Deep Research features three distinct implementation approaches, each with its own strengths:
 
-## 1. Graph-based Workflow Implementation (`src/open_deep_research/graph.py`)
+## 1. Linear Workflow Implementation (`src/open_deep_research/graph.py`)
 
-The graph-based implementation follows a structured plan-and-execute workflow:
+The linear workflow implementation follows a structured plan-and-execute workflow:
 
 - **Planning Phase**: Uses a planner model to analyze the topic and generate a structured report plan
 - **Human-in-the-Loop**: Allows for human feedback and approval of the report plan before proceeding
@@ -127,20 +141,20 @@ The graph-based implementation follows a structured plan-and-execute workflow:
 
 This implementation provides a more interactive experience with greater control over the report structure, making it ideal for situations where report quality and accuracy are critical.
 
-You can customize the research assistant workflow through several parameters:
+## 2. Graph-based Research Implementation (`src/open_deep_research/research_graph.py` and `src/open_deep_research/graph_workflow.py`)
 
-- `report_structure`: Define a custom structure for your report (defaults to a standard research report format)
-- `number_of_queries`: Number of search queries to generate per section (default: 2)
-- `max_search_depth`: Maximum number of reflection and search iterations (default: 2)
-- `planner_provider`: Model provider for planning phase (default: "anthropic", but can be any provider from supported integrations with `init_chat_model` as listed [here](https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html))
-- `planner_model`: Specific model for planning (default: "claude-3-7-sonnet-latest")
-- `planner_model_kwargs`: Additional parameter for planner_model
-- `writer_provider`: Model provider for writing phase (default: "anthropic", but can be any provider from supported integrations with `init_chat_model` as listed [here](https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html))
-- `writer_model`: Model for writing the report (default: "claude-3-5-sonnet-latest")
-- `writer_model_kwargs`: Additional parameter for writer_model
-- `search_api`: API to use for web searches (default: "tavily", options include "perplexity", "exa", "arxiv", "pubmed", "linkup")
+The graph-based implementation uses a dynamic graph structure for research:
 
-## 2. Multi-Agent Implementation (`src/open_deep_research/multi_agent.py`)
+- **Visual Research Graph**: Creates a visual representation of the research process
+- **Branching Exploration**: Allows for multiple research paths to be explored simultaneously
+- **Sub-question Generation**: Automatically breaks down complex topics into specific sub-questions
+- **Interactive Visualization**: Provides an HTML visualization of the research graph
+- **Flexible Search Integration**: Works with all supported search providers
+- **Human Feedback Loop**: Allows for human review and feedback at key decision points
+
+This implementation excels at complex, exploratory research where the relationships between different aspects of a topic are important to understand and visualize.
+
+## 3. Multi-Agent Implementation (`src/open_deep_research/multi_agent.py`)
 
 The multi-agent implementation uses a supervisor-researcher architecture:
 
@@ -151,6 +165,24 @@ The multi-agent implementation uses a supervisor-researcher architecture:
 - **Currently Limited to Tavily Search**: The multi-agent implementation currently only works with Tavily for search, though the framework is designed to support additional search tools in the future
 
 This implementation focuses on efficiency and parallelization, making it ideal for faster report generation with less direct user involvement.
+
+## Configuration Options
+
+You can customize the research assistant through several parameters:
+
+- `research_mode`: Choose between "linear", "graph", or "multi_agent" modes (default: "linear")
+- `report_structure`: Define a custom structure for your report (defaults to a standard research report format)
+- `number_of_queries`: Number of search queries to generate per section (default: 2)
+- `max_search_depth`: Maximum number of reflection and search iterations (default: 2)
+- `planner_provider`: Model provider for planning phase (default: "anthropic")
+- `planner_model`: Specific model for planning (default: "claude-3-7-sonnet-latest")
+- `planner_model_kwargs`: Additional parameter for planner_model
+- `writer_provider`: Model provider for writing phase (default: "anthropic")
+- `writer_model`: Model for writing the report (default: "claude-3-5-sonnet-latest")
+- `writer_model_kwargs`: Additional parameter for writer_model
+- `search_api`: API to use for web searches (default: "tavily", options include "perplexity", "exa", "arxiv", "pubmed", "linkup")
+- `visualization_enabled`: Enable visualization for graph-based research (default: True)
+- `visualization_path`: Path to save visualization (default: "research_graph.html")
 
 ## Search API Configuration
 
@@ -229,4 +261,4 @@ Follow the [quickstart](#-quickstart) to start LangGraph server locally.
 
 ### Hosted deployment
  
-You can easily deploy to [LangGraph Platform](https://langchain-ai.github.io/langgraph/concepts/#deployment-options). 
+You can easily deploy to [LangGraph Platform](https://langchain-ai.github.io/langgraph/concepts/#deployment-options).
