@@ -29,6 +29,11 @@ class SearchAPI(Enum):
     DUCKDUCKGO = "duckduckgo"
     GOOGLESEARCH = "googlesearch"
 
+class ResearchMode(Enum):
+    LINEAR = "linear"
+    GRAPH = "graph"
+    MULTI_AGENT = "multi_agent"
+
 @dataclass(kw_only=True)
 class Configuration:
     """The configurable fields for the chatbot."""
@@ -36,6 +41,7 @@ class Configuration:
     report_structure: str = DEFAULT_REPORT_STRUCTURE # Defaults to the default report structure
     search_api: SearchAPI = SearchAPI.TAVILY # Default to TAVILY
     search_api_config: Optional[Dict[str, Any]] = None
+    research_mode: ResearchMode = ResearchMode.LINEAR # Default to LINEAR mode
     
     # Graph-specific configuration
     number_of_queries: int = 2 # Number of search queries to generate per iteration
@@ -46,8 +52,8 @@ class Configuration:
     writer_provider: str = "anthropic" # Defaults to Anthropic as provider
     writer_model: str = "claude-3-5-sonnet-latest" # Defaults to claude-3-5-sonnet-latest
     writer_model_kwargs: Optional[Dict[str, Any]] = None # kwargs for writer_model
-    search_api: SearchAPI = SearchAPI.TAVILY # Default to TAVILY
-    search_api_config: Optional[Dict[str, Any]] = None 
+    visualization_enabled: bool = True # Enable visualization for graph-based research
+    visualization_path: str = "research_graph.html" # Path to save visualization
     
     # Multi-agent specific configuration
     supervisor_model: str = "openai:gpt-4.1" # Model for supervisor agent in multi-agent setup
